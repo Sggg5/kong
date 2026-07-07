@@ -1,0 +1,72 @@
+﻿name: Hourly Update
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update data.json
+        run: |
+          CURRENT_INDEX=$(cat data.json | jq -r '.index // 0')
+          NEW_INDEX=$((CURRENT_INDEX + 1))
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          QUOTES=(
+            "大音希声，大象无形。"  "老子 · 道德经 第四十一章"
+            "道生一，一生二，二生三，三生万物。"  "老子 · 道德经 第四十二章"
+            "致虚极，守静笃。"  "老子 · 道德经 第十六章"
+            "天地之间，其犹橐龠乎？虚而不屈，动而愈出。"  "老子 · 道德经 第五章"
+            "空故纳万境，静故了群动。"  "苏轼 · 送参寥师"
+            "色不异空，空不异色；色即是空，空即是色。"  "般若波罗蜜多心经"
+            "菩提本无树，明镜亦非台。本来无一物，何处惹尘埃。"  "慧能 · 六祖坛经"
+            "一切有为法，如梦幻泡影，如露亦如电，应作如是观。"  "金刚经"
+            "宇宙便是吾心，吾心即是宇宙。"  "陆九渊"
+            "江畔何人初见月？江月何年初照人？"  "张若虚 · 春江花月夜"
+            "人生如逆旅，我亦是行人。"  "苏轼 · 临江仙"
+            "行到水穷处，坐看云起时。"  "王维 · 终南别业"
+            "千江有水千江月，万里无云万里天。"  "嘉泰普灯录"
+            ".Empty your mind, be formless, shapeless — like water."  "Bruce Lee"
+            "The true sign of intelligence is not knowledge but imagination."  "Albert Einstein"
+            "The quieter you become, the more you can hear."  "Rumi"
+            "In the midst of movement and chaos, keep stillness inside of you."  "Deepak Chopra"
+            "We are made of star stuff."  "Carl Sagan"
+            "Look up at the stars and not down at your feet."  "Stephen Hawking"
+            "For small creatures such as we the vastness is bearable only through love."  "Carl Sagan"
+            "天下万物生于有，有生于无。"  "老子 · 道德经 第四十章"
+            "大方无隅，大器晚成，大音希声，大象无形。"  "老子 · 道德经 第四十一章"
+            "上善若水。水善利万物而不争。"  "老子 · 道德经 第八章"
+            "知者不言，言者不知。"  "老子 · 道德经 第五十六章"
+            "人法地，地法天，天法道，道法自然。"  "老子 · 道德经 第二十五章"
+            "天地有大美而不言。"  "庄子 · 知北游"
+            "至人之用心若镜，不将不迎，应而不藏。"  "庄子 · 应帝王"
+            "独与天地精神往来。"  "庄子 · 天下"
+          )
+
+          LEN=${#QUOTES[@]}
+          IDX=$(( NEW_INDEX % (LEN / 2) * 2 ))
+          QUOTE="${QUOTES[$IDX]}"
+          SOURCE="${QUOTES[$((IDX + 1))]}"
+
+          jq -n \
+            --arg idx "$NEW_INDEX" \
+            --arg quote "$QUOTE" \
+            --arg source "$SOURCE" \
+            --arg updated "$NOW" \
+            '{index: ($idx | tonumber), quote: $quote, source: $source, updated: $updated}' > data.json
+
+      - name: Commit & Push
+        run: |
+          git config user.name "kong-bot"
+          git config user.email "kong-bot@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "chore: hourly update #$(jq -r '.index' data.json)"
+          git push
