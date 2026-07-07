@@ -98,6 +98,7 @@ var j=document.createElement("div");j.className="judge "+cls;j.textContent=text
 var r=el.getBoundingClientRect()
 j.style.left=(r.left+r.width/2)+"px";j.style.top=(r.top)+"px"
 document.body.appendChild(j);setTimeout(function(){j.remove()},600)
+}
 setInterval(function(){for(var i=notes.length-1;i>=0;i--){if(notes[i].hit){notes.splice(i,1)}}},500)
 function updScore(){
 document.getElementById("score").textContent=score
