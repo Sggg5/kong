@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>空 · 历史语录</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;700&family=Inter:wght@200;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #e8e6e3;
+    font-family: 'Noto Serif SC', 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    padding: 1.8rem 2rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  header h1 {
+    font-weight: 200;
+    font-size: clamp(20px, 3vw, 36px);
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.15);
+    text-align: center;
+  }
+  header h1 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  header h1 a:hover { color: rgba(255,255,255,0.3); }
+  .header-sub {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(255,255,255,0.1);
+    margin-top: 0.3rem;
+    letter-spacing: 0.2em;
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.06) 5%, rgba(255,255,255,0.06) 95%, transparent);
+  }
+
+  .entry {
+    position: relative;
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .entry:hover { transform: scale(1.015); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .entry:nth-child(odd) { animation-delay: 0.05s; }
+  .entry:nth-child(even) { animation-delay: 0.1s; }
+
+  .entry .dot {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(200,210,255,0.15);
+    border: 1px solid rgba(200,210,255,0.1);
+    z-index: 1;
+  }
+
+  .entry .bubble {
+    width: 80%;
+    margin: 0 auto;
+    padding: 1.5rem 1.8rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    transition: background 0.3s;
+  }
+  .entry:hover .bubble {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.07);
+  }
+
+  .entry .idx {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 200;
+    color: rgba(255,255,255,0.12);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+  }
+
+  .entry .quote-text {
+    font-size: clamp(15px, 2vw, 24px);
+    font-weight: 200;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.06em;
+  }
+
+  .entry .quote-source {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(10px, 0.9vw, 13px);
+    font-weight: 200;
+    color: rgba(255,255,255,0.18);
+    margin-top: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .entry .quote-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 200;
+    color: rgba(255,255,255,0.08);
+    margin-top: 0.4rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Loading ── */
+  .loading {
+    text-align: center;
+    padding: 6rem 0;
+    font-weight: 200;
+    color: rgba(255,255,255,0.12);
+    letter-spacing: 0.3em;
+  }
+  .loading::after {
+    content: "";
+    display: inline-block;
+    width: 4px; height: 4px;
+    margin-left: 8px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    animation: loadPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes loadPulse {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.5; }
+  }
+
+  .empty {
+    text-align: center;
+    padding: 6rem 0;
+    font-weight: 200;
+    color: rgba(255,255,255,0.08);
+    letter-spacing: 0.2em;
+  }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(255,255,255,0.1);
+    letter-spacing: 0.2em;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .back-link:hover { color: rgba(255,255,255,0.3); }
+
+  @media (max-width: 500px) {
+    header { padding: 1.2rem 1rem 0.8rem; }
+    .timeline { padding: 2rem 1rem 4rem; }
+    .entry .bubble { width: 90%; padding: 1rem 1.2rem; }
+    .timeline::before { left: 8px; }
+    .entry .dot { left: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><a href="/">空</a><span style="font-weight:100;color:rgba(255,255,255,0.06)"> · </span>语录</h1>
+  <div class="header-sub">A R C H I V E</div>
+</header>
+
+<div class="timeline" id="timeline">
+  <div class="loading" id="loading">LOADING</div>
+</div>
+
+<a class="back-link" href="/">← 归去来兮</a>
+
+<script>
+  async function loadHistory() {
+    try {
+      const resp = await fetch('/history/index.json?_=' + Date.now());
+      const data = await resp.json();
+
+      const container = document.getElementById('timeline');
+      document.getElementById('loading').remove();
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="empty">| | | | | 空 | | | | |</div>';
+        return;
+      }
+
+      // Reverse chronological
+      data.reverse();
+
+      for (const entry of data) {
+        const updated = entry.updated
+          ? new Date(entry.updated).toLocaleString('zh-CN', {
+              hour12: false,
+              year: 'numeric', month: '2-digit', day: '2-digit',
+              hour: '2-digit', minute: '2-digit'
+            })
+          : '';
+
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.innerHTML = `
+          <div class="dot"></div>
+          <div class="bubble">
+            <div class="idx">#${entry.index}</div>
+            <div class="quote-text">${entry.quote}</div>
+            <div class="quote-source">${entry.source || ''}</div>
+            <div class="quote-date">${updated}</div>
+          </div>
+        `;
+        div.addEventListener('click', () => {
+          window.location.href = '/?quote=' + encodeURIComponent(entry.quote);
+        });
+        container.appendChild(div);
+      }
+    } catch (e) {
+      document.getElementById('timeline').innerHTML =
+        '<div class="empty">尚无存档 · 等待第一次更新</div>';
+    }
+  }
+
+  loadHistory();
+</script>
+</body>
+</html>
