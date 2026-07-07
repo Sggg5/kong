@@ -104,6 +104,7 @@ function updScore(){
 document.getElementById("score").textContent=score
 var c=document.getElementById("combo");c.textContent=combo>0?"combo "+combo:"combo 0"
 if(combo>0)c.style.color="rgba(255,255,255,0.15)";else c.style.color="rgba(255,255,255,0.04)"
+}
 var beatTimer=0,sequencerActive=false
 function updateBPM(v){bpm=Math.max(60,Math.min(180,v));beatInterval=60000/bpm;beatLen=60/bpm}updateBPM(100)
 function seqLoop(){if(!gameActive)return
