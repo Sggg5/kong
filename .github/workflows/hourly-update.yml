@@ -1,4 +1,4 @@
-﻿name: Hourly Update
+name: Hourly Update
 
 on:
   schedule:
@@ -16,9 +16,10 @@ jobs:
 
       - name: Update data.json
         run: |
-          CURRENT_INDEX=$(cat data.json | jq -r '.index // 0')
+          CURRENT_INDEX=$(cat data.json 2>/dev/null | jq -r '.index // 0')
           NEW_INDEX=$((CURRENT_INDEX + 1))
           NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          SLUG=$(date -u +"%Y/%m/%d-%H%M%S")
 
           QUOTES=(
             "大音希声，大象无形。"  "老子 · 道德经 第四十一章"
@@ -31,10 +32,9 @@ jobs:
             "一切有为法，如梦幻泡影，如露亦如电，应作如是观。"  "金刚经"
             "宇宙便是吾心，吾心即是宇宙。"  "陆九渊"
             "江畔何人初见月？江月何年初照人？"  "张若虚 · 春江花月夜"
-            "人生如逆旅，我亦是行人。"  "苏轼 · 临江仙"
             "行到水穷处，坐看云起时。"  "王维 · 终南别业"
             "千江有水千江月，万里无云万里天。"  "嘉泰普灯录"
-            ".Empty your mind, be formless, shapeless — like water."  "Bruce Lee"
+            "Empty your mind, be formless, shapeless — like water."  "Bruce Lee"
             "The true sign of intelligence is not knowledge but imagination."  "Albert Einstein"
             "The quieter you become, the more you can hear."  "Rumi"
             "In the midst of movement and chaos, keep stillness inside of you."  "Deepak Chopra"
@@ -49,6 +49,7 @@ jobs:
             "天地有大美而不言。"  "庄子 · 知北游"
             "至人之用心若镜，不将不迎，应而不藏。"  "庄子 · 应帝王"
             "独与天地精神往来。"  "庄子 · 天下"
+            "Stay hungry, stay foolish."  "Steve Jobs"
           )
 
           LEN=${#QUOTES[@]}
@@ -56,6 +57,7 @@ jobs:
           QUOTE="${QUOTES[$IDX]}"
           SOURCE="${QUOTES[$((IDX + 1))]}"
 
+          # Update main data.json
           jq -n \
             --arg idx "$NEW_INDEX" \
             --arg quote "$QUOTE" \
@@ -63,10 +65,36 @@ jobs:
             --arg updated "$NOW" \
             '{index: ($idx | tonumber), quote: $quote, source: $source, updated: $updated}' > data.json
 
+          # Archive to history/YYYY/MM/DD-HHMMSS.json
+          ARCHIVE_DIR="history/$(date -u +'%Y/%m')"
+          mkdir -p "$ARCHIVE_DIR"
+          cp data.json "$ARCHIVE_DIR/${SLUG##*/}.json"
+          echo "Archived to $ARCHIVE_DIR/${SLUG##*/}.json"
+
+          # Sync API endpoint
+          cp data.json api/quote.json
+          echo "API endpoint synced"
+
+      - name: Build history index
+        run: |
+          # Generate a JSON index of all archived quotes
+          echo "[" > history/index.json
+          FIRST=true
+          for f in $(find history -name '*.json' ! -name 'index.json' | sort); do
+            $FIRST || echo "," >> history/index.json
+            FIRST=false
+            cat "$f" >> history/index.json
+          done
+          echo "]" >> history/index.json
+
+          # Validate JSON
+          jq '.' history/index.json > /dev/null && echo "History index valid"
+
       - name: Commit & Push
         run: |
           git config user.name "kong-bot"
           git config user.email "kong-bot@users.noreply.github.com"
-          git add data.json
+          git add data.json history/
           git diff --staged --quiet || git commit -m "chore: hourly update #$(jq -r '.index' data.json)"
           git push
+
