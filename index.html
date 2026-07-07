@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>空 · Star Catch</title>
+<title>Star Catch</title>
 <meta name="theme-color" content="#0a0a0f">
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
@@ -8,136 +8,157 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0a0f;color:#e8e6e3;font-family:"Inter",sans-serif;overflow:hidden;height:100vh;width:100vw;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 #c{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0}
-#ui{position:fixed;z-index:10;top:0;left:0;width:100vw;height:100vh;pointer-events:none}
+#ptr{position:fixed;z-index:99;pointer-events:none;width:20px;height:20px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s;mix-blend-mode:screen}
+#ptr.glow{width:50px;height:50px;border-color:rgba(200,210,255,0.1)}
 .hud{position:absolute;top:1.5rem;left:1.5rem;z-index:11}
-.score{font-weight:200;font-size:clamp(32px,6vw,64px);color:rgba(255,255,255,0.12);letter-spacing:-.03em;line-height:1}
+.score{font-weight:200;font-size:clamp(32px,6vw,64px);color:rgba(255,255,255,0.12);letter-spacing:-.03em}
 .score span{font-weight:600;color:rgba(255,255,255,0.5)}
-.combo{font-weight:200;font-size:clamp(12px,1.5vw,18px);color:rgba(200,210,255,0.15);margin-top:0.2rem;letter-spacing:.15em;transition:opacity .3s}
+.combo{font-weight:200;font-size:clamp(12px,1.5vw,18px);color:rgba(200,210,255,0.15);margin-top:.2rem;letter-spacing:.15em;transition:all .3s}
 .combo.on{color:rgba(200,210,255,0.4)}
 .hud-r{position:absolute;top:1.5rem;right:1.5rem;z-index:11;text-align:right}
 .hud-r .hs{font-weight:200;font-size:clamp(10px,1.2vw,14px);color:rgba(255,255,255,0.08);letter-spacing:.1em}
 .hud-r .hs span{color:rgba(255,255,255,0.2)}
 .card{position:absolute;z-index:11;bottom:2rem;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;transition:opacity .5s}
 .card.hide{opacity:0}
-.card .q{font-size:clamp(11px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.12);letter-spacing:.08em;line-height:1.6;max-width:80vw}
-.card .src{font-size:clamp(9px,.9vw,11px);font-weight:200;color:rgba(255,255,255,0.06);margin-top:.3rem;letter-spacing:.2em}
-#start{position:fixed;z-index:20;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,15,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)}
-#start .title{font-size:clamp(60px,15vw,140px);font-weight:800;color:rgba(255,255,255,0.06);letter-spacing:.05em;line-height:1}
+.card .q{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.08);letter-spacing:.08em;max-width:80vw}
+.card .src{font-size:clamp(8px,.7vw,10px);font-weight:200;color:rgba(255,255,255,0.04);margin-top:.2rem}
+#start{position:fixed;z-index:20;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,15,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)}
+#start .title{font-size:clamp(60px,15vw,140px);font-weight:800;color:rgba(255,255,255,0.06);letter-spacing:.05em;line-height:1;transition:color .5s}
+#start:hover .title{color:rgba(255,255,255,0.1)}
 #start .sub{font-size:clamp(12px,2vw,24px);font-weight:200;color:rgba(255,255,255,0.15);letter-spacing:.3em;margin-top:-.5em}
-#start .tip{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.08);margin-top:2rem;letter-spacing:.2em;animation:pd 2s ease-in-out infinite}
-#start .hint{font-size:clamp(14px,2vw,24px);font-weight:200;color:rgba(255,255,255,0.2);margin-top:1rem;letter-spacing:.15em}
-@keyframes pd{0%,100%{opacity:.3}50%{opacity:.8}}
-#go{position:fixed;z-index:20;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,15,0.85);display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px)}
-#go .go-score{font-size:clamp(60px,12vw,120px);font-weight:800;color:rgba(255,255,255,0.1);letter-spacing:-.03em}
-#go .go-label{font-size:clamp(12px,1.5vw,20px);font-weight:200;color:rgba(255,255,255,0.15);letter-spacing:.2em}
-#go .go-hs{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.06);margin-top:1rem;letter-spacing:.15em}
+#start .hint{font-size:clamp(20px,4vw,48px);font-weight:200;color:rgba(255,255,255,0.06);margin-top:1rem;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#start .tap{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.1);margin-top:1rem;letter-spacing:.2em;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+#start .controls{font-size:clamp(8px,.8vw,11px);font-weight:200;color:rgba(255,255,255,0.04);margin-top:2.5rem;letter-spacing:.12em}
+#go{position:fixed;z-index:20;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,15,0.88);display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px)}
+#go .go-label{font-size:clamp(10px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.1);letter-spacing:.2em}
+#go .go-score{font-size:clamp(60px,12vw,120px);font-weight:800;color:rgba(255,255,255,0.1);letter-spacing:-.03em;margin-bottom:.3rem}
+#go .go-hs{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.06);letter-spacing:.15em}
 #go .go-new{font-size:clamp(10px,1vw,14px);font-weight:400;color:rgba(74,222,128,0.3);margin-top:.3rem;letter-spacing:.2em;display:none}
-#go .go-tip{font-size:clamp(11px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.12);margin-top:2rem;letter-spacing:.2em;animation:pd 2s ease-in-out infinite}
-.target{position:fixed;z-index:5;pointer-events:auto;cursor:pointer;border-radius:50%;transform:translate(-50%,-50%);transition:transform .1s}
-.target:active{transform:translate(-50%,-50%) scale(0.85)}
-.miss{position:fixed;z-index:6;font-weight:200;font-size:clamp(24px,4vw,48px);color:rgba(255,100,100,0.12);pointer-events:none;animation:mf .8s ease forwards}
-@keyframes mf{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(2) translateY(-40px)}}
-.burst{position:fixed;z-index:4;pointer-events:none;border-radius:50%;animation:bf .5s ease forwards}
-@keyframes bf{0%{opacity:1;transform:translate(-50%,-50%) scale(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
+#go .go-tip{font-size:clamp(11px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.1);margin-top:1.5rem;letter-spacing:.2em;animation:pulse 2s ease-in-out infinite}
+.star{position:fixed;z-index:5;pointer-events:auto;cursor:pointer;border-radius:50%;transform:translate(-50%,-50%);transition:transform .15s,box-shadow .2s}
+.star:hover{transform:translate(-50%,-50%) scale(1.2)!important}
+.star:active{transform:translate(-50%,-50%) scale(0.8)!important}
+.burst{position:fixed;z-index:4;pointer-events:none;border-radius:50%;animation:brst .5s ease forwards}
+@keyframes brst{0%{opacity:1;transform:translate(-50%,-50%) scale(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
+.pop{position:fixed;z-index:6;pointer-events:none;font-weight:600;font-size:clamp(16px,3vw,36px);animation:popf .8s ease forwards}
+@keyframes popf{0%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-80%) translateY(-40px)}}
 @media(max-width:500px){.hud{top:1rem;left:1rem}.hud-r{top:1rem;right:1rem}.card{bottom:1rem}}
 </style></head><body>
 <canvas id="c"></canvas>
+<div id="ptr"></div>
 <div id="start">
 <div class="title">空</div>
 <div class="sub">STAR CATCH</div>
-<div class="hint">★</div>
-<div class="tip">tap to start</div>
+<div class="hint">☆</div>
+<div class="tap">click to start</div>
+<div class="controls">click stars · combo multiplies · miss resets</div>
 </div>
 <div id="go">
 <div class="go-label">score</div>
 <div class="go-score" id="goScore">0</div>
 <div class="go-hs">best <span id="goHS">0</span></div>
 <div class="go-new" id="goNew">★ NEW HIGH SCORE ★</div>
-<div class="go-tip">tap to play again</div>
+<div class="go-tip">click to play again</div>
 </div>
-<div class="hud"><div class="score"><span id="score">0</span></div><div class="combo" id="combo">COMBO x1</div></div>
-<div class="hud-r"><div class="hs">BEST <span id="hs">0</span></div></div>
-<div class="card" id="card"><div class="q" id="q">…</div><div class="src" id="src">&nbsp;</div></div>
+<div class="hud"><div class="score"><span id="score">0</span></div><div class="combo" id="combo">combo x1</div></div>
+<div class="hud-r"><div class="hs">best <span id="hs">0</span></div></div>
+<div class="card" id="card"><div class="q" id="q"></div><div class="src" id="src"></div></div>
 <script>
 var actx=null
 function initAudio(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)()}
-function playBeep(freq,dur,vol){try{initAudio();var o=actx.createOscillator(),g=actx.createGain();o.type="sine";o.frequency.value=freq;g.gain.value=vol;g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+dur);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+dur)}catch(e){}}
-function playCatch(){playBeep(880,0.08,0.06)}
-function playMiss(){playBeep(220,0.15,0.04)}
-function playCombo(n){playBeep(660+n*40,0.06,0.05)}
-function playStart(){playBeep(440,0.1,0.05);setTimeout(function(){playBeep(660,0.1,0.05)},100);setTimeout(function(){playBeep(880,0.15,0.05)},200)}
-var c=document.getElementById("c"),cx=c.getContext("2d"),W,H,stars=[],bgTime=0
+function beep(f,d,v){try{initAudio();var o=actx.createOscillator(),g=actx.createGain();o.type="sine";o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+d);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d)}catch(e){}}
+function sfxCatch(){beep(880,0.08,0.06)}
+function sfxCombo(n){beep(660+n*30,0.06,0.05)}
+function sfxMiss(){beep(180,0.15,0.04)}
+function sfxStart(){beep(440,0.1,0.04);setTimeout(function(){beep(660,0.1,0.05)},120);setTimeout(function(){beep(880,0.15,0.06)},240)}
+function sfxOver(){beep(330,0.2,0.04);setTimeout(function(){beep(220,0.3,0.04)},200)}
+var c=document.getElementById("c"),cx=c.getContext("2d"),W,H,st=[],bgT=0,mx={x:-999,y:-999}
 function rs(){W=c.width=innerWidth;H=c.height=innerHeight}onresize=rs;rs()
-for(var i=0;i<120;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+0.3,a:Math.random()*0.4+0.1,sp:Math.random()*0.08+0.01,da:(Math.random()-0.5)*0.005,ph:Math.random()*6.28})
-function drawBg(){bgTime++;cx.clearRect(0,0,W,H)
-var g=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.6)
-g.addColorStop(0,"#0f0f1a");g.addColorStop(1,"#050508");cx.fillStyle=g;cx.fillRect(0,0,W,H)
-for(var s of stars){s.a+=s.da;if(s.a>1)s.a=1;if(s.a<0.1)s.a=0.1;s.y-=s.sp;if(s.y<-5){s.y=H+5;s.x=Math.random()*W}var tw=Math.sin(bgTime*0.02+s.ph)*0.3+0.7;cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle="rgba(255,255,255,"+(s.a*tw*0.6)+")";cx.fill()}
-if(Math.random()<0.05){var sx=Math.random()*W,sy=Math.random()*H*0.2,sl=50+Math.random()*80;for(var i=0;i<sl;i+=2){cx.beginPath();cx.arc(sx+i*1.5,sy+i*0.8,1-i/sl*0.8,0,Math.PI*2);cx.fillStyle="rgba(255,255,255,"+((1-i/sl)*0.3)+")";cx.fill()}}
+for(var i=0;i<150;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.3,a:Math.random()*0.4+0.2,sp:Math.random()*0.12+0.01,da:(Math.random()-0.5)*0.006,ph:Math.random()*6.28})
+onmousemove=function(e){mx.x=e.clientX;mx.y=e.clientY}
+onmouseleave=function(){mx.x=-999;mx.y=-999}
+function drawBg(){bgT++;cx.clearRect(0,0,W,H)
+var g=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7)
+g.addColorStop(0,"#0f0f1a");g.addColorStop(0.5,"#0a0a12");g.addColorStop(1,"#050508");cx.fillStyle=g;cx.fillRect(0,0,W,H)
+var md=mx.x>0?250:0
+for(var s of st){s.a+=s.da;if(s.a>1)s.a=1;if(s.a<0.1)s.a=0.1;s.y-=s.sp;if(s.y<-5){s.y=H+5;s.x=Math.random()*W}var tw=Math.sin(bgT*0.03+s.ph)*0.3+0.7
+if(md){var d=Math.hypot(s.x-mx.x,s.y-mx.y);if(d<md){var f=(1-d/md)*0.15;s.x+=(mx.x-s.x)/d*f;s.y+=(mx.y-s.y)/d*f}}
+cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle="rgba(255,255,255,"+(s.a*tw*0.7)+")";cx.fill()
+if(s.r>1){var gl=cx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4);gl.addColorStop(0,"rgba(200,210,255,"+(s.a*tw*0.05)+")");gl.addColorStop(1,"rgba(0,0,0,0)");cx.fillStyle=gl;cx.beginPath();cx.arc(s.x,s.y,s.r*4,0,Math.PI*2);cx.fill()}}
+if(Math.random()<0.04){var sx=Math.random()*W,sy=Math.random()*H*0.25;for(var i=0;i<60;i+=2){cx.beginPath();cx.arc(sx+i*2,sy+i*0.6,1.2-i/60,0,Math.PI*2);cx.fillStyle="rgba(255,255,255,"+((1-i/60)*0.2)+")";cx.fill()}}
 requestAnimationFrame(drawBg)}drawBg()
-var state="start",score=0,combo=0,highScore=parseInt(localStorage.getItem("kongHS")||"0"),targets=[],targetId=0,gameTimer=0,spawnRate=60,maxTargets=8,round=1
-document.getElementById("hs").textContent=highScore
-function spawnTarget(){
-var size=40+Math.random()*40+round*2
-var x=size/2+Math.random()*(W-size),y=size/2+Math.random()*(H*0.7)+H*0.1
+var ptr=document.getElementById("ptr")
+function movePtr(){ptr.style.left=mx.x+"px";ptr.style.top=mx.y+"px"}setInterval(movePtr,16)
+var state="start",score=0,combo=0,hs=parseInt(localStorage.getItem("kongHS")||"0"),targets=[],tid=0,gt=0,rate=45,maxt=8,rnd=1
+document.getElementById("hs").textContent=hs
+function spawn(){
+var sz=30+Math.random()*50+rnd*2
+var x=sz+Math.random()*(W-sz*2),y=sz+Math.random()*(H*0.7)+H*0.15
 var hue=Math.floor(Math.random()*360)
-var life=100+Math.random()*60
-var id=targetId++
-var el=document.createElement("div");el.className="target";el.id="t"+id
-var grad="radial-gradient(circle at 35% 35%,rgba(255,255,255,0.3),hsl("+hue+",80%,60%) 40%,hsl("+((hue+40)%360)+",70%,30%) 100%)"
-el.style.cssText="width:"+size+"px;height:"+size+"px;left:"+x+"px;top:"+y+"px;background:"+grad+";box-shadow:0 0 "+size*0.5+"px hsla("+hue+",80%,60%,0.2)"
-el.addEventListener("click",function(e){e.stopPropagation();catchStar(id)})
-el.addEventListener("touchend",function(e){e.preventDefault();catchStar(id)})
+var life=80+Math.random()*60
+var id=tid++
+var el=document.createElement("div");el.className="star";el.id="s"+id
+var g2="radial-gradient(circle at 30% 30%,rgba(255,255,255,0.4),hsl("+hue+",80%,55%) 35%,hsl("+((hue+60)%360)+",70%,25%) 100%)"
+el.style.cssText="width:"+sz+"px;height:"+sz+"px;left:"+x+"px;top:"+y+"px;background:"+g2+";box-shadow:0 0 "+sz*0.6+"px hsla("+hue+",80%,50%,0.15)"
+el.addEventListener("click",function(e){e.stopPropagation();catchit(id)})
+el.addEventListener("touchend",function(e){e.preventDefault();catchit(id)})
 document.body.appendChild(el)
-targets.push({id:id,el:el,x:x,y:y,size:size,life:life,maxLife:life,hue:hue})
+targets.push({id:id,el:el,x:x,y:y,sz:sz,life:life,ml:life,hue:hue})
+el.addEventListener("mouseenter",function(){ptr.classList.add("glow")})
+el.addEventListener("mouseleave",function(){ptr.classList.remove("glow")})
 }
-function catchStar(id){
-for(var i=0;i<targets.length;i++){if(targets[i].id===id){
-var t=targets[i]
-combo++;score+=combo
-playCatch();if(combo%5===0)playCombo(combo)
-var b=document.createElement("div");b.className="burst";var s=t.size*2;b.style.cssText="width:"+s+"px;height:"+s+"px;left:"+t.x+"px;top:"+t.y+"px;background:radial-gradient(circle,hsl("+t.hue+",80%,60%) 0%,transparent 100%);box-shadow:0 0 "+s+"px hsla("+t.hue+",80%,60%,0.1)"
+function catchit(id){for(var i=0;i<targets.length;i++){if(targets[i].id===id){
+var t=targets[i];combo++;score+=combo
+sfxCatch();if(combo>1&&combo%3===0)sfxCombo(combo)
+var p=document.createElement("div");p.className="pop";p.textContent="+"+combo;
+p.style.cssText="left:"+t.x+"px;top:"+t.y+"px;color:hsl("+t.hue+",80%,60%)"
+document.body.appendChild(p);setTimeout(function(){p.remove()},800)
+var b=document.createElement("div");b.className="burst";var bs=t.sz*2.5
+b.style.cssText="width:"+bs+"px;height:"+bs+"px;left:"+t.x+"px;top:"+t.y+"px;background:radial-gradient(circle,hsl("+t.hue+",80%,55%) 0%,transparent 100%)"
 document.body.appendChild(b);setTimeout(function(){b.remove()},500)
-t.el.remove();targets.splice(i,1)
-updateScore()
+t.el.remove();targets.splice(i,1);updScore()
 return}}
-function missStar(t){playMiss();combo=0;updateScore()
-function updateScore(){document.getElementById("score").textContent=score
-var ce=document.getElementById("combo");ce.textContent="COMBO x"+combo;ce.className=combo>1?"combo on":"combo"
+function updScore(){document.getElementById("score").textContent=score
+var ce=document.getElementById("combo");ce.textContent="combo x"+combo
+ce.className=combo>1?"combo on":"combo"
+var nr=Math.floor(score/25)+1;if(nr!==rnd){rnd=nr;maxt=Math.min(14,8+Math.floor(rnd/2));rate=Math.max(18,45-Math.floor(score/40)*2)}}
 function gameLoop(){if(state!=="play")return
-gameTimer++
-var rate=Math.max(20,spawnRate-Math.floor(score/50)*3)
-if(gameTimer%rate===0&&targets.length<maxTargets+Math.floor(round/2))spawnTarget()
-var newRound=Math.floor(score/30)+1
-if(newRound!==round){round=newRound;maxTargets=Math.min(12,8+Math.floor(round/3))}
+gt++
+if(gt%rate===0&&targets.length<maxt)spawn()
 for(var i=targets.length-1;i>=0;i--){var t=targets[i];t.life--
-var p=t.life/t.maxLife
-t.el.style.transform="translate(-50%,-50%) scale("+(0.6+0.4*p)+")"
+var p=t.life/t.ml
+t.el.style.transform="translate(-50%,-50%) scale("+(0.5+0.5*p)+")"
 t.el.style.opacity=p
-if(p<0.3){var glow=0.1+(1-p)*0.2;t.el.style.boxShadow="0 0 "+(t.size*glow)+"px hsla("+t.hue+",100%,60%,"+glow+")"}
-if(t.life<=0){t.el.remove();targets.splice(i,1);combo=0;updateScore();playMiss()}
+if(p<0.25){var gl=0.1+(1-p)*0.3;t.el.style.boxShadow="0 0 "+(t.sz*gl)+"px hsla("+t.hue+",100%,50%,"+gl+")"}
+if(t.life<=0){t.el.remove();targets.splice(i,1);combo=0;updScore();sfxMiss()}}
 setTimeout(gameLoop,50)}
 document.getElementById("start").addEventListener("click",function(){
-this.style.display="none";state="play";score=0;combo=0;round=1;maxTargets=8;spawnRate=60;targets=[];updateScore()
-playStart();gameLoop()
-document.getElementById("card").classList.add("hide")
-document.body.addEventListener("click",function(e){if(state==="play"&&e.target===document.body){combo=0;updateScore()}})
-})
-function gameOver(){state="go"
-for(var t of targets){t.el.remove()}targets=[]
-document.getElementById("goScore").textContent=score
-document.getElementById("goHS").textContent=highScore
-var isNew=false
-if(score>highScore){highScore=score;localStorage.setItem("kongHS",String(highScore));isNew=true}
-document.getElementById("goNew").style.display=isNew?"block":"none"
-document.getElementById("go").style.display="flex"
-document.getElementById("card").classList.remove("hide")
-
-document.getElementById("go").addEventListener("click",function(){
-this.style.display="none";state="play";score=0;combo=0;round=1;maxTargets=8;spawnRate=60;targets=[];updateScore()
+this.style.display="none";state="play";score=0;combo=0;rnd=1;maxt=8;rate=45;targets=[];gt=0;updScore()
+sfxStart()
+for(var i=0;i<4;i++)setTimeout(function(){if(state==="play")spawn()},i*200)
 document.getElementById("card").classList.add("hide")
 gameLoop()
 })
-async function loadQuote(){try{var r=await fetch("data.json?_="+Date.now()),d=await r.json();document.getElementById("q").textContent=d.quote||"";document.getElementById("src").textContent=d.source||""}catch(e){document.getElementById("q").textContent=""}}loadQuote()
+document.addEventListener("click",function(e){if(state==="play"&&e.target===document.body){combo=0;updScore();ptr.classList.remove("glow")}})
+function gameOver(){state="go"
+for(var t of targets){t.el.remove()}targets=[]
+sfxOver()
+document.getElementById("goScore").textContent=score
+document.getElementById("goHS").textContent=hs
+var n=false;if(score>hs){hs=score;localStorage.setItem("kongHS",String(hs));n=true}
+document.getElementById("goNew").style.display=n?"block":"none"
+document.getElementById("go").style.display="flex"
+document.getElementById("card").classList.remove("hide")
+setTimeout(function(){document.getElementById("go").addEventListener("click",function(){
+this.style.display="none";state="play";score=0;combo=0;rnd=1;maxt=8;rate=45;targets=[];gt=0;updScore()
+for(var i=0;i<4;i++)setTimeout(function(){if(state==="play")spawn()},i*200)
+document.getElementById("card").classList.add("hide")
+gameLoop()
+})
+},100)
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&state==="play")gameOver()})
+async function loadQ(){try{var r=await fetch("data.json?_="+Date.now()),d=await r.json();document.getElementById("q").textContent=d.quote||"";document.getElementById("src").textContent=d.source||""}catch(e){}}loadQ()
 document.addEventListener("touchmove",function(e){e.preventDefault()},{passive:false})
 </script></body></html>
