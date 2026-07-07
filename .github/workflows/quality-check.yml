@@ -1,0 +1,50 @@
+﻿name: Quality Check
+
+on:
+  push:
+    branches: [main]
+    paths: ["**.json", "**.html", "**.js"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate data.json
+        run: |
+          echo "::group::Validating data.json"
+          jq -e '.index | type == "number"' data.json
+          jq -e '.quote | type == "string"' data.json
+          jq -e '.source | type == "string"' data.json
+          jq -e '.updated | type == "string"' data.json
+          echo "data.json is valid"
+          echo "::endgroup::"
+
+      - name: Check HTML
+        run: |
+          echo "::group::Checking index.html"
+          grep -q "<!DOCTYPE html>" index.html
+          grep -q "</html>" index.html
+          echo "index.html looks valid"
+          echo "::endgroup::"
+
+      - name: Validate manifest.json
+        run: |
+          echo "::group::Validating manifest.json"
+          jq -e '.name | type == "string"' manifest.json
+          jq -e '.short_name | type == "string"' manifest.json
+          echo "manifest.json is valid"
+          echo "::endgroup::"
+
+      - name: Lint GitHub Actions
+        run: |
+          echo "::group::Linting workflows"
+          for f in .github/workflows/*.yml; do
+            echo "Checking $f..."
+            python3 -c "import yaml; yaml.safe_load(open('$f'))" || { echo "::error::$f is invalid YAML"; exit 1; }
+          done
+          echo "All workflows valid"
+          echo "::endgroup::"
