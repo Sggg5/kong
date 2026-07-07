@@ -1,0 +1,55 @@
+﻿name: Cosmic Enrichment
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch NASA APOD
+        id: apod
+        continue-on-error: true
+        run: |
+          RESP=$(curl -s "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=1" 2>/dev/null || echo "")
+          if [ -n "$RESP" ]; then
+            TITLE=$(echo "$RESP" | jq -r '.[0].title // "untitled"')
+            URL=$(echo "$RESP" | jq -r '.[0].url // ""')
+            EXPL=$(echo "$RESP" | jq -r '.[0].explanation // ""' | cut -c1-200)
+            DATE=$(echo "$RESP" | jq -r '.[0].date // ""')
+            jq -n --arg title "$TITLE" --arg url "$URL" --arg expl "$EXPL" --arg date "$DATE" \
+              '{apod: {title: $title, url: $url, explanation: $expl, date: $date}}' > .apod.json
+            echo "APOD fetched: $TITLE"
+          else
+            echo "APOD fetch failed (DEMO_KEY rate limit)"
+          fi
+
+      - name: Generate cosmic stats
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          STARS=0
+          HAS_APOD="false"
+          if [ -f .apod.json ]; then
+            HAS_APOD="true"
+            STARS=$(curl -s "https://api.github.com/repos/${{ github.repository }}" | jq '.stargazers_count // 0' 2>/dev/null || echo 0)
+          fi
+          jq -n \
+            --arg updated "$NOW" \
+            --argjson stars "$STARS" \
+            --argjson has_apod $(echo "$HAS_APOD") \
+            '{updated: $updated, stargazers: $stars, has_apod: $has_apod}' > .cosmic.json
+
+      - name: Commit enrichment data
+        run: |
+          git config user.name "cosmic-bot"
+          git config user.email "cosmic-bot@users.noreply.github.com"
+          git add .apod.json .cosmic.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: weekly cosmic enrichment $(date -u +%Y-%m-%d)"
+          git push
