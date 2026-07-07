@@ -1,7 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>Star Catch</title>
-<meta name="theme-color" content="#0a0a0f">
+<title>Star Catch</title><meta name="theme-color" content="#0a0a0f">
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -16,25 +15,23 @@ body{background:#0a0a0f;color:#e8e6e3;font-family:"Inter",sans-serif;overflow:hi
 .combo{font-weight:200;font-size:clamp(12px,1.5vw,18px);color:rgba(200,210,255,0.15);margin-top:.2rem;letter-spacing:.15em;transition:all .3s}
 .combo.on{color:rgba(200,210,255,0.4)}
 .hud-r{position:absolute;top:1.5rem;right:1.5rem;z-index:11;text-align:right}
-.hud-r .hs{font-weight:200;font-size:clamp(10px,1.2vw,14px);color:rgba(255,255,255,0.08);letter-spacing:.1em}
-.hud-r .hs span{color:rgba(255,255,255,0.2)}
+.hud-r .hs{font-weight:200;font-size:clamp(10px,1.2vw,14px);color:rgba(255,255,255,0.08)}
 .card{position:absolute;z-index:11;bottom:2rem;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;transition:opacity .5s}
 .card.hide{opacity:0}
-.card .q{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.08);letter-spacing:.08em;max-width:80vw}
+.card .q{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.08)}
 .card .src{font-size:clamp(8px,.7vw,10px);font-weight:200;color:rgba(255,255,255,0.04);margin-top:.2rem}
 #start{position:fixed;z-index:20;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,15,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)}
-#start .title{font-size:clamp(60px,15vw,140px);font-weight:800;color:rgba(255,255,255,0.06);letter-spacing:.05em;line-height:1;transition:color .5s}
-#start:hover .title{color:rgba(255,255,255,0.1)}
+#start .title{font-size:clamp(60px,15vw,140px);font-weight:800;color:rgba(255,255,255,0.06);letter-spacing:.05em;line-height:1}
 #start .sub{font-size:clamp(12px,2vw,24px);font-weight:200;color:rgba(255,255,255,0.15);letter-spacing:.3em;margin-top:-.5em}
 #start .hint{font-size:clamp(20px,4vw,48px);font-weight:200;color:rgba(255,255,255,0.06);margin-top:1rem;animation:float 3s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 #start .tap{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.1);margin-top:1rem;letter-spacing:.2em;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
-#start .controls{font-size:clamp(8px,.8vw,11px);font-weight:200;color:rgba(255,255,255,0.04);margin-top:2.5rem;letter-spacing:.12em}
+#start .controls{font-size:clamp(8px,.8vw,11px);font-weight:200;color:rgba(255,255,255,0.04);margin-top:2.5rem}
 #go{position:fixed;z-index:20;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,15,0.88);display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px)}
-#go .go-label{font-size:clamp(10px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.1);letter-spacing:.2em}
+#go .go-label{font-size:clamp(10px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.1)}
 #go .go-score{font-size:clamp(60px,12vw,120px);font-weight:800;color:rgba(255,255,255,0.1);letter-spacing:-.03em;margin-bottom:.3rem}
-#go .go-hs{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.06);letter-spacing:.15em}
+#go .go-hs{font-size:clamp(10px,1vw,14px);font-weight:200;color:rgba(255,255,255,0.06)}
 #go .go-new{font-size:clamp(10px,1vw,14px);font-weight:400;color:rgba(74,222,128,0.3);margin-top:.3rem;letter-spacing:.2em;display:none}
 #go .go-tip{font-size:clamp(11px,1.2vw,16px);font-weight:200;color:rgba(255,255,255,0.1);margin-top:1.5rem;letter-spacing:.2em;animation:pulse 2s ease-in-out infinite}
 .star{position:fixed;z-index:5;pointer-events:auto;cursor:pointer;border-radius:50%;transform:translate(-50%,-50%);transition:transform .15s,box-shadow .2s}
@@ -46,22 +43,13 @@ body{background:#0a0a0f;color:#e8e6e3;font-family:"Inter",sans-serif;overflow:hi
 @keyframes popf{0%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-80%) translateY(-40px)}}
 @media(max-width:500px){.hud{top:1rem;left:1rem}.hud-r{top:1rem;right:1rem}.card{bottom:1rem}}
 </style></head><body>
-<canvas id="c"></canvas>
-<div id="ptr"></div>
-<div id="start">
-<div class="title">空</div>
-<div class="sub">STAR CATCH</div>
-<div class="hint">☆</div>
-<div class="tap">click to start</div>
-<div class="controls">click stars · combo multiplies · miss resets</div>
-</div>
-<div id="go">
-<div class="go-label">score</div>
-<div class="go-score" id="goScore">0</div>
-<div class="go-hs">best <span id="goHS">0</span></div>
-<div class="go-new" id="goNew">★ NEW HIGH SCORE ★</div>
-<div class="go-tip">click to play again</div>
-</div>
+<canvas id="c"></canvas><div id="ptr"></div>
+<div id="start"><div class="title">空</div><div class="sub">STAR CATCH</div>
+<div class="hint">☆</div><div class="tap">click to start</div>
+<div class="controls">click stars + combo multiplies + miss resets</div></div>
+<div id="go"><div class="go-label">score</div><div class="go-score" id="goScore">0</div>
+<div class="go-hs">best <span id="goHS">0</span></div><div class="go-new" id="goNew">★ NEW HIGH SCORE ★</div>
+<div class="go-tip">click to play again</div></div>
 <div class="hud"><div class="score"><span id="score">0</span></div><div class="combo" id="combo">combo x1</div></div>
 <div class="hud-r"><div class="hs">best <span id="hs">0</span></div></div>
 <div class="card" id="card"><div class="q" id="q"></div><div class="src" id="src"></div></div>
@@ -77,11 +65,9 @@ function sfxOver(){beep(330,0.2,0.04);setTimeout(function(){beep(220,0.3,0.04)},
 var c=document.getElementById("c"),cx=c.getContext("2d"),W,H,st=[],bgT=0,mx={x:-999,y:-999}
 function rs(){W=c.width=innerWidth;H=c.height=innerHeight}onresize=rs;rs()
 for(var i=0;i<150;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.3,a:Math.random()*0.4+0.2,sp:Math.random()*0.12+0.01,da:(Math.random()-0.5)*0.006,ph:Math.random()*6.28})
-onmousemove=function(e){mx.x=e.clientX;mx.y=e.clientY}
-onmouseleave=function(){mx.x=-999;mx.y=-999}
+onmousemove=function(e){mx.x=e.clientX;mx.y=e.clientY};onmouseleave=function(){mx.x=-999;mx.y=-999}
 function drawBg(){bgT++;cx.clearRect(0,0,W,H)
-var g=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7)
-g.addColorStop(0,"#0f0f1a");g.addColorStop(0.5,"#0a0a12");g.addColorStop(1,"#050508");cx.fillStyle=g;cx.fillRect(0,0,W,H)
+var g=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7);g.addColorStop(0,"#0f0f1a");g.addColorStop(0.5,"#0a0a12");g.addColorStop(1,"#050508");cx.fillStyle=g;cx.fillRect(0,0,W,H)
 var md=mx.x>0?250:0
 for(var s of st){s.a+=s.da;if(s.a>1)s.a=1;if(s.a<0.1)s.a=0.1;s.y-=s.sp;if(s.y<-5){s.y=H+5;s.x=Math.random()*W}var tw=Math.sin(bgT*0.03+s.ph)*0.3+0.7
 if(md){var d=Math.hypot(s.x-mx.x,s.y-mx.y);if(d<md){var f=(1-d/md)*0.15;s.x+=(mx.x-s.x)/d*f;s.y+=(mx.y-s.y)/d*f}}
@@ -112,14 +98,14 @@ el.addEventListener("mouseleave",function(){ptr.classList.remove("glow")})
 function catchit(id){for(var i=0;i<targets.length;i++){if(targets[i].id===id){
 var t=targets[i];combo++;score+=combo
 sfxCatch();if(combo>1&&combo%3===0)sfxCombo(combo)
-var p=document.createElement("div");p.className="pop";p.textContent="+"+combo;
+var p=document.createElement("div");p.className="pop";p.textContent="+"+combo
 p.style.cssText="left:"+t.x+"px;top:"+t.y+"px;color:hsl("+t.hue+",80%,60%)"
 document.body.appendChild(p);setTimeout(function(){p.remove()},800)
 var b=document.createElement("div");b.className="burst";var bs=t.sz*2.5
 b.style.cssText="width:"+bs+"px;height:"+bs+"px;left:"+t.x+"px;top:"+t.y+"px;background:radial-gradient(circle,hsl("+t.hue+",80%,55%) 0%,transparent 100%)"
 document.body.appendChild(b);setTimeout(function(){b.remove()},500)
 t.el.remove();targets.splice(i,1);updScore()
-return}}
+return}}}
 function updScore(){document.getElementById("score").textContent=score
 var ce=document.getElementById("combo");ce.textContent="combo x"+combo
 ce.className=combo>1?"combo on":"combo"
