@@ -1,0 +1,10 @@
+{
+  "name": "kong",
+  "version": "1.0.0",
+  "description": "空 · 宇宙冥想 CLI",
+  "bin": {
+    "kong": "./bin/kong.js"
+  },
+  "files": ["bin/"],
+  "license": "MIT"
+}
