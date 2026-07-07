@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>空 · API</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0f; color: #e8e6e3; font-family: 'Inter', 'Noto Serif SC', sans-serif; padding: 3rem 2rem; }
+  h1 { font-weight: 200; font-size: 2rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.15); margin-bottom: 2rem; }
+  h2 { font-weight: 200; font-size: 1.2rem; color: rgba(255,255,255,0.25); margin: 2rem 0 0.8rem; letter-spacing: 0.1em; }
+  p, li { font-weight: 200; color: rgba(255,255,255,0.4); line-height: 1.8; }
+  code { font-family: 'Inter', monospace; background: rgba(255,255,255,0.04); padding: 0.2em 0.6em; border-radius: 4px; font-size: 0.9em; }
+  pre { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 1.2rem; overflow-x: auto; margin: 1rem 0; }
+  a { color: rgba(200,210,255,0.4); text-decoration: none; }
+  a:hover { color: rgba(200,210,255,0.7); }
+  ul { list-style: none; }
+  li::before { content: "✦ "; color: rgba(255,255,255,0.08); }
+</style>
+</head>
+<body>
+<h1>空 · API</h1>
+<p>公共 JSON API — 自由使用，无需认证。</p>
+
+<h2>当前语录</h2>
+<pre><code>GET /api/quote.json</code></pre>
+<p>返回当前显示的语录对象，包含 index、quote、source、updated。</p>
+
+<h2>历史存档</h2>
+<pre><code>GET /history/index.json</code></pre>
+<p>返回所有历史语录的 JSON 数组（按时间正序）。</p>
+
+<h2>示例</h2>
+<pre><code>curl https://sggg5.github.io/kong/api/quote.json</code></pre>
+
+<p style="margin-top:3rem"><a href="/">← 返回主页</a></p>
+</body>
+</html>
