@@ -1,25 +1,28 @@
-# 空 · Star Catch
+# ??Rhythm
 
-> 接星辰，入虚空。  
-> *Catch the stars. Chase the void.*
+> ????????????
+> *Move to the rhythm. Chase the void.*
 
-**空 · Star Catch** is a minimal, addictive arcade game running in your browser. Tap stars to catch them — build combos, set high scores, lose yourself in the cosmos.
+**??Rhythm** is a browser-based rhythm game built with pure HTML/CSS/JS. Tap notes as they fall to the beat ? build combos, set high scores, lose yourself in the rhythm.
 
-## 🎮 How to Play
+## ?? How to Play
 
-- **Tap** the colorful stars as they appear
-- **Combo** multiplies your score — don't let stars fade away!
-- **Level up** every 30 points — stars spawn faster
+- **Tap/Click** the colorful notes as they reach the hit zone (circle at center)
+- **PERFECT** (within 4% of hit zone) ? +3 points, combo up
+- **GOOD** (within 9%) ? +1 point, combo up
+- **MISS** ? combo resets to 0
+- **Esc** to end game at any time
 - **High score** saved in your browser
 
-## ✨ Features
+## ?? Features
 
-- 120-star particle background with shooting stars
-- Procedural audio (Web Audio API beeps)
-- Combo system with escalating rewards
-- Hourly quotes from the void (bottom of screen)
-- PWA installable
+- Procedural audio (Web Audio API: kick, snare, hi-hat)
+- BPM accelerates from 100 ? 180 as you play
+- Starfield particle background
+- Combo tracking with color feedback
+- Game Over screen with score summary
+- Responsive, works on mobile + desktop
 
-## 🕹️ Play
+## ?? Play
 
-🌐 **https://sggg5.github.io/kong/**
+?? **https://sggg5.github.io/kong/**
