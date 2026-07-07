@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sggg5.github.io/kong/sitemap.xml
