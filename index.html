@@ -2,10 +2,54 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>? - Kong - encoding test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>空 · Kong</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0a0f; color:#e8e6e3; font-family:serif; overflow:hidden; height:100vh; }
+#c { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; }
+.o { position:fixed; z-index:1; width:100vw; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; }
+.m { font-size:clamp(120px,20vw,280px); font-weight:200; color:rgba(255,255,255,0.06); letter-spacing:0.1em; animation:b 8s ease-in-out infinite; }
+@keyframes b { 0%,100%{opacity:0.06;transform:scale(1)} 50%{opacity:0.12;transform:scale(1.04)} }
+.s { font-size:clamp(14px,2vw,28px); font-weight:200; color:rgba(255,255,255,0.2); letter-spacing:0.6em; margin-top:-1em; }
+.card { position:fixed; z-index:2; bottom:12vh; left:50%; transform:translateX(-50%); text-align:center; pointer-events:none; }
+.q { font-size:clamp(16px,2.2vw,36px); font-weight:200; line-height:1.8; color:rgba(255,255,255,0.7); max-width:80vw; letter-spacing:0.08em; }
+.src { font-size:clamp(11px,1vw,16px); font-weight:200; color:rgba(255,255,255,0.25); margin-top:1.2em; letter-spacing:0.3em; text-transform:uppercase; }
+.meta { font-size:clamp(10px,0.8vw,13px); font-weight:200; color:rgba(255,255,255,0.12); margin-top:2em; letter-spacing:0.15em; }
+.corner { position:fixed; z-index:3; font-size:11px; font-weight:200; color:rgba(255,255,255,0.12); letter-spacing:0.15em; pointer-events:auto; cursor:pointer; }
+.tl { top:2.4rem; left:2.4rem; } .br { bottom:2.4rem; right:2.4rem; cursor:default; pointer-events:none; }
+.ld { display:inline-block; width:6px; height:6px; border-radius:50%; background:#4ade80; margin-right:6px; animation:pd 2s ease-in-out infinite; vertical-align:middle; }
+@keyframes pd { 0%,100%{opacity:0.3} 50%{opacity:1} }
+</style>
 </head>
 <body>
-<h1>?</h1>
-<p>???? OK</p>
+<canvas id="c"></canvas>
+<div class="o"><div class="m">空</div><div class="s">K O N G</div></div>
+<div class="corner tl"><span class="ld"></span>LIVE</div>
+<div class="corner br" id="clock">--:--:--</div>
+<div class="card"><div class="q" id="q">…</div><div class="src" id="src">&nbsp;</div><div class="meta" id="meta">&nbsp;</div></div>
+<script>
+const c=document.getElementById('c'),cx=c.getContext('2d');
+let W,H,stars=[],mouse={x:-999,y:-999};
+function resize(){W=c.width=innerWidth;H=c.height=innerHeight}
+onresize=resize;resize();
+for(let i=0;i<500;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.3,a:Math.random(),da:(Math.random()-0.5)*0.006,speed:Math.random()*0.12+0.02});
+onmousemove=e=>{mouse.x=e.clientX;mouse.y=e.clientY};
+onmouseleave=()=>{mouse.x=-999;mouse.y=-999};
+setInterval(()=>{if(Math.random()<0.25){const a=Math.PI/4+(Math.random()-0.5)*0.8,s=4+Math.random()*8;stars.push({x:Math.random()*W,y:Math.random()*H*0.3,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,len:50+Math.random()*80,r:0.8+Math.random()*0.8})}},2500);
+function draw(t){cx.clearRect(0,0,W,H);const g=cx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7);g.addColorStop(0,'#0f0f1a');g.addColorStop(0.5,'#0a0a12');g.addColorStop(1,'#050508');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+for(const s of stars){s.a+=s.da;if(s.a>1)s.a=1;if(s.a<0.2)s.a=0.2;s.y-=s.speed;if(s.y<-5){s.y=H+5;s.x=Math.random()*W}
+let dx=0,dy=0;const md=mouse.x>0?200:0;if(md){const d=Math.hypot(s.x-mouse.x,s.y-mouse.y);if(d<md&&d>0){const f=(1-d/md)*0.3;dx=(mouse.x-s.x)/d*f*1.5;dy=(mouse.y-s.y)/d*f*1.5}}
+s.y-=dy*0.3;s.x+=dx*0.3;if(s.x<-5)s.x=W+5;if(s.x>W+5)s.x=-5
+cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle='rgba(255,255,255,'+(s.a*0.8)+')';cx.fill()}
+for(let i=stars.length-1;i>=0;i--){const s=stars[i];if(!s.vx)continue;s.x+=s.vx;s.y+=s.vy;s.life-=0.01;if(s.life<=0){stars.splice(i,1);continue}
+const a=Math.atan2(s.vy,s.vx);cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-Math.cos(a)*s.len*s.life,s.y-Math.sin(a)*s.len*s.life);cx.strokeStyle='rgba(255,255,255,'+(s.life*0.5)+')';cx.lineWidth=s.r;cx.stroke()}
+requestAnimationFrame(draw)}
+requestAnimationFrame(draw);
+function uc(){const n=new Date();document.getElementById('clock').textContent=n.toLocaleString('zh-CN',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+setInterval(uc,1000);uc();
+async function ld(){try{const r=await fetch('data.json?_='+Date.now()),d=await r.json();document.getElementById('q').textContent=d.quote||'…';document.getElementById('src').textContent=d.source||'';const u=d.updated?new Date(d.updated).toLocaleString('zh-CN',{hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'';document.getElementById('meta').textContent=(d.index?'#'+d.index:'')+(u?'  updated '+u:'')}catch(e){document.getElementById('q').textContent='虚空生万有'}}
+ld();setInterval(ld,60000);
+</script>
 </body>
 </html>
